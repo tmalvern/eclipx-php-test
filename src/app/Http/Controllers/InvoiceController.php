@@ -60,6 +60,7 @@ class InvoiceController extends Controller
     {
         $invoice_data = Invoice::where('invoice_no', $invoice_no)->get();
         $invoice_totals = Invoice::select(
+            'invoiced',
             DB::raw("(SUM(amount_net)) AS total_amount_net"),
             DB::raw("(SUM(amount_gst)) AS total_amount_gst")
         )->where('invoice_no', $invoice_no)

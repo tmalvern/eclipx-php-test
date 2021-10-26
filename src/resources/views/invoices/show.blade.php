@@ -2,7 +2,11 @@
 
 @section('content')
 <div class="container mt-5">
-    <h1>Invoice Number: {{$invoice_no}}</h1>
+    <div class="row p-3">
+        <div class="col-md-8"><h1>Invoice Number: {{$invoice_no}}</h1></div>
+        <div class="col-md-4"><h1 class="text-right">Date: {{ format_date($invoice_totals->invoiced) }}</h1></div>
+    </div>
+
     <table class="table table-striped table-hover table-bordered">
         <thead>
         <tr>
@@ -15,8 +19,8 @@
             @foreach ($invoice_data as $invoice)
                 <tr>
                     <td>{{ $invoice->description }}</td>
-                    <td>${{ number_format($invoice->amount_net, 2, '.', ',') }}</td>
-                    <td align="right">${{ number_format($invoice->amount_gst, 2, '.', ',') }}</td>
+                    <td>${{ format_currency($invoice->amount_net) }}</td>
+                    <td align="right">${{ format_currency($invoice->amount_gst) }}</td>
                 </tr>
             @endforeach
         </tbody>
@@ -29,16 +33,16 @@
                 </tr>
                 <tr>
                     <td width="73%" >Total Amount Net</td>
-                    <td width="25%" align="right">${{ number_format($invoice_totals->total_amount_net, 2, '.', ',') }}</td>
+                    <td width="25%" align="right">${{ format_currency($invoice_totals->total_amount_net) }}</td>
                 </tr>
                 <tr>
                     <td width="73%">Total Amount GST</td>
-                    <td width="25%" align="right">${{ number_format($invoice_totals->total_amount_gst, 2, '.', ',') }}</td>
+                    <td width="25%" align="right">${{ format_currency($invoice_totals->total_amount_gst) }}</td>
                 </tr>
 
                 <tr>
                     <td width="73%">Total</td>
-                    <td width="25%" align="right">${{ number_format($grand_total, 2, '.', ',')}}</td>
+                    <td width="25%" align="right">${{ format_currency($grand_total) }}</td>
                 </tr>
 
         </tbody>
