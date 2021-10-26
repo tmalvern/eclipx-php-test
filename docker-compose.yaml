@@ -1,17 +1,25 @@
 version: '3.8'
+
 services:
   php-apache-environment:
-    container_name: php-test
     build:
+      context: .
       dockerfile: PhpDockerfile
-    depends_on:
-      - db
-    volumes:
-      - ./src:/var/www/html/
+    image: eclipx-php-test
     ports:
       - 8000:80
-  db:
-    container_name: db
+    depends_on:
+      - db-eclipx
+    volumes:
+      - ./src:/srv/app
+    environment: 
+      - DOCUMENT_ROOT_CONTEXT=public
+      - ALLOW_OVERRIDE_OPTION=All
+      - APPLICATION_ENV_OPTION=development
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+  db-eclipx:
+    container_name: db-eclipx
     image: mysql
     restart: always
     environment:
@@ -30,6 +38,8 @@ services:
       - '8008:80'
     restart: always
     environment:
-      PMA_HOST: db
+      PMA_HOST: db-eclipx
     depends_on:
-      - db
+      - db-eclipx
+volumes: 
+  db-eclipx:

@@ -1,2 +1,48 @@
 FROM php:8.0-apache
+
+COPY . /srv/app
+COPY vhost.conf /etc/apache2/sites-available/000-default.conf
+
+WORKDIR /srv/app
+
+# Install Node.js
+RUN curl -sL https://deb.nodesource.com/setup_14.x | bash
+RUN apt-get install --yes nodejs
+RUN node -v
+RUN npm -v
+RUN npm i -g nodemon
+RUN nodemon -v
+
 RUN docker-php-ext-install mysqli && docker-php-ext-enable mysqli
+RUN docker-php-ext-install pdo_mysql
+
+RUN apt-get update && apt-get install -y \
+        libfreetype6-dev \
+        libjpeg62-turbo-dev \
+        libpng-dev \
+        libzip-dev \
+        unzip \
+    && docker-php-ext-install zip \
+    && docker-php-ext-install -j$(nproc) iconv \
+    && docker-php-ext-configure gd \
+    && docker-php-ext-install -j$(nproc) gd \
+    && docker-php-ext-install bcmath
+
+RUN yes | pecl install xdebug \
+    && docker-php-ext-enable xdebug \
+    && echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo "xdebug.idekey=VSCODE" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo "xdebug.client_host=host.docker.internal" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo "xdebug.discover_client_host=true" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo "xdebug.log=/srv/app/xdebug.log" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && touch /srv/app/xdebug.log \
+    && chown www-data:www-data /srv/app/xdebug.log \
+    && chmod 775 /srv/app/xdebug.log
+
+# Install composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+RUN chown -R www-data:www-data /srv/app \
+    && a2enmod rewrite \
+    && service apache2 restart
+

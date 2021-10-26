@@ -1,55 +1,27 @@
-# Eclipx PHP Coding Test
+# Eclipx PHP Coding Test By Tendai Mpita
 
-## Purpose
+## Framework Used
 
-This small coding test is used as part of the interview process for openings
-with Eclipx. There are threee main tasks to be completed within the test, with
-the aim of demonstrating an understanding of PHP frameworks and database
-processes.
+The **Laravel Framework 8.67.0** was used.
 
-## Goal
+## Setup
 
-The three challenges that need to be completed are:
+Once you have cloned the repository, please run the following commands:
 
-1. Create a migration script that will create a new column in the database
-named **registration** as a VARCHAR(50) field and extract the registration
-number from the description field to fill in this new field.
-2. Create an HTML view showing a summary of the invoices that lists the invoice
-date, invoice number, total amount net and total amount gst, client_id and the
-number of contracts billed.
-3. Provide a link from the summary page to a details page that will show the
-line data for a single invoice from the database, along with the same total
-fields at the bottom of the page.
+- docker-compose build
+- docker-compose up -d
 
-## Criteria
+Please add the database details which are contained in the the file docker-compose.yaml into the src/.env
 
-A PHP framework of you choosing **must** be used, preferably one built upon
-Symfony.
+Once the containers are running please ssh into the php-apache-environment container to run the following command
 
-The user added code must follow the PSR-12 coding standard.
+- composer install
 
-## Bonus Points
+To create the the registration field and fill it with the extracted registration number from the descricption, please run the following commands:
 
-- A UI framework is utilised
-- The data retrieval for the UI is done through a REST call
-- Test Driven Development methodoly implemented
-- Readme on code design and framework use
+- php artisan migrate
+- php artisan db:seed
 
-## Tips
+## Links
 
-The Docker files provided will build an environment with PHP, Apache, MySQL and
-PHPMyAdmin. *docker-compose build* and *docker-compose up* will be helpful
-commands once Docker Desktop is installed.
-
-MySQL will have a database initialised and accessible through the credentials
-provided in the docker-compose.yaml file.
-
-The *src* folder should be used to store the code required.
-
-The Docker configuration can be updated to include Composer locally if this
-makes builds easier.
-
-PHPMyAdmin can be utilised via [http://localhost:8008](http://localhost:8008).
-The PHP app can be seen at [http://localhost:8000](http://localhost:8000). If
-these ports are used by your environment already they can be updated in the
-Docker config.
+Invoice link [http://localhost:8008/invoices](http://localhost:8008/invoices).
